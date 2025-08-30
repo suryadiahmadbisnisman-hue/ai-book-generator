@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Book Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
+    textarea, input, button { width: 100%; margin: 8px 0; padding: 10px; }
+    .output { border: 1px solid #ddd; padding: 15px; margin-top: 15px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>📖 AI Book Generator</h1>
+  <input id="title" type="text" placeholder="Masukkan judul buku"/>
+  <textarea id="outline" rows="5" placeholder="Masukkan daftar bab/sub-bab (satu per baris)"></textarea>
+  <button onclick="generateBook()">Generate Buku</button>
+  <div id="result" class="output"></div>
+
+  <script>
+    async function generateBook() {
+      const title = document.getElementById("title").value;
+      const outline = document.getElementById("outline").value;
+
+      document.getElementById("result").innerText = "⏳ Sedang membuat buku...";
+
+      try {
+        const res = await fetch("http://localhost:3000/api/generate-book", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, outline })
+        });
+
+        const data = await res.json();
+        document.getElementById("result").innerText = data.content || "Gagal menghasilkan buku.";
+      } catch (err) {
+        document.getElementById("result").innerText = "❌ Error: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
